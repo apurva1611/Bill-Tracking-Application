@@ -1,15 +1,9 @@
 ---
 version: 2
 jobs:
-  pr_check_workflow:
+  pr_check:
     docker:
       - image: circleci/node:8.10.0
-      - image: circleci/mysql:8.0.4
-        environment:
-          MYSQL_HOST: 127.0.0.1
-          MYSQL_DB: db1
-          MYSQL_USER: apurva@localhost
-          MYSQL_PASSWORD: Rajuabha25!
     working_directory: ~/repo
     steps:
       - checkout
@@ -53,14 +47,14 @@ jobs:
       - run: npm test
 workflows:
   version: 2
-  pr-check-workflow:
+  pr-check:
     jobs:
-    - pr_check_workflow:
+    - pr_check:
         filters:
           branches:
             ignore:
             - master
-  build:
+  build_deploy:
     jobs:
     - build:
         filters:
