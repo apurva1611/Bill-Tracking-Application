@@ -50,4 +50,5 @@ Steps for building Application:
 Steps to run unit test:
 1. go to webapp folder.
 2. Just check in package.json in script object there is a property "test:mocha".
-3. Run npm run test command to run test cases.
+3. Run npm run test command to run test cases..
+4. Demo purpose.
