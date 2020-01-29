@@ -1,0 +1,32 @@
+{
+  "name": "webapp",
+  "version": "1.0.0",
+  "description": "cloud-based-web-app",
+  "main": "server.js",
+  "scripts": {
+    "build":"npm install",
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/apurva1611/webapp.git"
+  },
+  "author": "Apurva Mathur",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/apurva1611/webapp/issues"
+  },
+  "dependencies": {
+    "basic-auth": "^2.0.1",
+    "bcrypt": "^3.0.7",
+    "body-parser": "^1.19.0",
+    "chai": "^4.2.0",
+    "chai-http": "^4.3.0",
+    "email-validator": "^2.0.4",
+    "express": "^4.17.1",
+    "mocha": "^7.0.1",
+    "mysql": "^2.17.1",
+    "password-validator": "^5.0.3",
+    "uuidv4": "^6.0.2"
+  }
+}
