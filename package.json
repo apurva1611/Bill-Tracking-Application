@@ -1,21 +1,14 @@
 {
-  "name": "webapp",
+  "name": "clooud_app",
   "version": "1.0.0",
-  "description": "cloud-based-web-app",
-  "main": "server.js",
+  "description": "web app",
+  "main": "index.js",
   "scripts": {
     "build":"npm install",
     "test": "mocha"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/apurva1611/webapp.git"
-  },
-  "author": "Apurva Mathur",
+  "author": "",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/apurva1611/webapp/issues"
-  },
   "dependencies": {
     "basic-auth": "^2.0.1",
     "bcrypt": "^3.0.7",
@@ -28,5 +21,9 @@
     "mysql": "^2.17.1",
     "password-validator": "^5.0.3",
     "uuidv4": "^6.0.2"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "chai-http": "^4.3.0"
   }
 }

@@ -1,24 +1,8 @@
 const basicAuth = require('basic-auth');
-const mysql = require('mysql');
 const bcrypt = require('bcrypt');
 const helper = require('../helper/helper');
 const { fromString } = require('uuidv4');
-var mysqlConnection = mysql.createConnection({
-    host: 'localhost',
-    user: 'apurva',
-    password: 'Rajuabha25!',
-    database: 'db1',
-    multipleStatements: true
-});
-
-mysqlConnection.connect((err) => {
-    if (!err){
-        console.log('DB connection succeded.');
-    }
-    else
-        console.log('DB connection failed \n Error : ' + JSON.stringify(err, undefined, 2));
-});
-
+const mysqlConnection= require('../db/db');
 
 exports.getAllusers = (req, res) => {
     mysqlConnection.query('SELECT * FROM users', (err, rows, fields) => {
