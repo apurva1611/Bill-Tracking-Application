@@ -4,7 +4,7 @@ const billController = require('../controllers/billController');
 router
   .route('/')
   .post(billController.checkUser,billController.checkBody,billController.setId,billController.createBill,billController.returnBill);
-// update and get an user
+// update,get,delete a bill
 router
   .route('/:id')
   .get(billController.checkUserForError,billController.checkBill,billController.getBill)
