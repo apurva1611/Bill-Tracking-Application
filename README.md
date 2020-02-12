@@ -27,15 +27,44 @@ CREATE TABLE bill (
     accountCreated varchar(255) NOT NULL,
     accountUpdated varchar(255) NOT NULL,
 );
-7. Install dependencies mentioned in package.json. These should be installed by going in webapp folder.Those include:
+
+7. Schema of table file is:
+CREATE TABLE file (
+    file_name varchar(255) NOT NULL,
+    id varchar(255) NOT NULL UNIQUE,
+    url varchar(255) NOT NULL,
+    upload_date varchar(255) NOT NULL
+);
+
+8.Schema of table metaFile is:
+CREATE TABLE metaFile (
+    field_name varchar(255) NOT NULL,
+    original_name varchar(255) NOT NULL,
+    encoding varchar(255) NOT NULL,
+    mimetype varchar(255) NOT NULL,
+    destination varchar(255) NOT NULL,
+    file_name varchar(255) NOT NULL,
+    path varchar(255) NOT NULL,
+	size varchar(255) NOT NULL,
+    id varchar(255) NOT NULL,
+    FOREIGN KEY (id) REFERENCES file(id)
+);
+
+9. Schema of table bill is changed and a cloumn attachment of type json was added:
+ALTER table bill
+ADD column attachement json;
+
+10. Install dependencies mentioned in package.json. These should be installed by going in webapp folder.Those include:
 {   "basic-auth": "^2.0.1",
     "bcrypt": "^3.0.7",
     "body-parser": "^1.19.0",
     "chai": "^4.2.0",
     "chai-http": "^4.3.0",
+    "cors": "^2.8.5",
     "email-validator": "^2.0.4",
     "express": "^4.17.1",
     "mocha": "^7.0.1",
+    "multer": "^1.4.2",
     "mysql": "^2.17.1",
     "password-validator": "^5.0.3",
     "uuidv4": "^6.0.2"
