@@ -20,9 +20,22 @@ const fileFilter = (req, file, cb) => {
            return cb(null,false)
         }
   };
-var upload = multer({storage:storage,fileFilter:fileFilter});
+var upload = multer({storage:storage,fileFilter:fileFilter}).single('image');
 router.route('/:id/file/').
-post(fileController.checkUser,fileController.checkBillId,upload.single('image'),fileController.checkExtension,fileController.insertFile);
+post(fileController.checkUser,fileController.checkBillId,(req,res,next)=>{
+    upload(req, res, function(err) {
+         if (err instanceof multer.MulterError) {
+            return res.status(400).send({message:"Error in uploading files"});
+        }
+        else if (err) {
+            return res.status(400).send({message:"error in uploading files"});
+        }
+        else{
+            next();
+        }
+    })
+
+},fileController.checkExtension,fileController.insertFile);
  router
 .route('/:id/file/:fileId')
    .get(fileController.checkUserForError,fileController.checkBillIDs,fileController.getFile)
