@@ -2,6 +2,7 @@ const basicAuth = require('basic-auth');
 const bcrypt = require('bcrypt');
 var fs = require('fs');
 const { fromString } = require('uuidv4');
+const AWS = require('aws-sdk')
 const mysqlConnection= require('../db/db');
 exports.checkBody = (req, res, next) => {
     if(req.body.vendor==undefined || req.body.bill_date==undefined || req.body.due_date==undefined || req.body.amount_due==undefined || req.body.payment_status==undefined || isNaN(req.body.amount_due)|| req.body.amount_due<0.01 || req.body.attachment==undefined || Object.keys(req.body.attachment).length){
@@ -203,9 +204,19 @@ exports.updateBill = (req, res,next) => {
     else{
         const attachment = JSON.parse(res.locals.result.attachment);
         const fileId = attachment.id;
-        fs.unlink('./'+attachment.url, function (err) {
-            if (err) throw err;
-        });
+        // fs.unlink('./'+attachment.url, function (err) {
+        //     if (err) throw err;
+        // });
+        var bucketInstance = new AWS.S3();
+            var params = {
+                Bucket: process.env.s3_bucket_name,
+                Key: attachment.file_name
+            };
+            bucketInstance.deleteObject(params, function (err, data) {
+                if (err){
+                    res.status(404).json({message:" attachment not deleted on s3 bucket"})
+                }
+            });   
         const sql = "DELETE FROM `metaFile` WHERE `id`=?";;
         mysqlConnection.query(sql,[fileId],(err, rows,fields) => {
         if (!err){   
