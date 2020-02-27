@@ -1,16 +1,18 @@
 var multer = require('multer');
 const express = require('express');
 const router = express.Router();
+const AWS = require('aws-sdk');// Lets us interact with the aws services
+const multerS3 = require('multer-s3');// Lets us interact with the S3 Bucket for multipart forms upload
 const fileController = require('../controllers/fileController');
-var storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, './images/')
-    },
-    filename: (req, file, cb) => {
-        const name = file.originalname.split(".");
-        cb(null, name[0] + req.params.id +'.' + name[1]);
-    }
-});
+// var storage = multer.diskStorage({
+//     destination: (req, file, cb) => {
+//         cb(null, './images/')
+//     },
+//     filename: (req, file, cb) => {
+//         const name = file.originalname.split(".");
+//         cb(null, name[0] + req.params.id +'.' + name[1]);
+//     }
+// });
 const fileFilter = (req, file, cb) => {
         const extension = file.mimetype && file.mimetype.split("/")[1]? file.mimetype.split("/")[1].toLowerCase():"";
         if(extension =="jpeg" || extension =="pdf" || extension == "jpg" || extension =="png"){
@@ -20,6 +22,19 @@ const fileFilter = (req, file, cb) => {
            return cb(null,false)
         }
   };
+const s3 = new AWS.S3();
+var storage=multerS3({
+    s3: s3,
+    bucket: process.env.s3_bucket_name,//bucketname
+    acl: 'public-read',
+    metadata: function (req, file, cb) {
+      cb(null, {fieldName: file.fieldname});//fieldname
+    },
+    key: function (req, file, cb) {
+      const name = file.originalname.split(".");
+      cb(null, name[0] + req.params.id +'.' + name[1])//uploaded file name after upload
+    }
+});
 var upload = multer({storage:storage,fileFilter:fileFilter}).single('image');
 router.route('/:id/file/').
 post(fileController.checkUser,fileController.checkBillId,(req,res,next)=>{

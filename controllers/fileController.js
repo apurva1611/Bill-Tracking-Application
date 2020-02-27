@@ -1,6 +1,8 @@
 const basicAuth = require('basic-auth');
 const bcrypt = require('bcrypt');
 var fs = require('fs');
+const AWS = require('aws-sdk');// Lets us interact with the aws services
+const multerS3 = require('multer-s3');// Lets us interact with the S3 Bucket for multipart forms upload
 const mysqlConnection= require('../db/db');
 exports.checkUser = (req, res, next) => {
     var user = basicAuth(req);
@@ -198,16 +200,28 @@ exports.deleteFileOnSystem = (req, res,next) => {
     const sql = "SELECT *  FROM `file` WHERE `id`='"+fileId+"'";
     mysqlConnection.query(sql,[null,fileId], (err, rows, fields) => {
         if (!err){
-            fs.unlink('./'+rows[0].url, function (err) {
-                if (err) throw err;
-                next();
-            }); 
+        //     fs.unlink('./'+rows[0].url, function (err) {
+        //         if (err) throw err;
+        //         next();
+        //     }); 
+            var bucketInstance = new AWS.S3();
+            var params = {
+                Bucket: process.env.s3_bucket_name,
+                Key: rows[0].file_name
+            };
+            bucketInstance.deleteObject(params, function (err, data) {
+                if (data) {
+                    next();
+                }
+                else {
+                    res.status(404).json({message:" attachment not deleted on s3 bucket"})
+                }
+            });         
         }
         else{
-            res.status(404).json({message:" attachment not deleted on system"}); 
+                res.status(404).json({message:" attachment not deleted on system"}); 
         }  
     });  
-    
 };
 
 exports.deleteFile = (req, res,next) => {

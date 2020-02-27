@@ -9,7 +9,6 @@ const app = express();
 app.use(bodyparser.json());
 app.use(bodyparser.urlencoded({ extended: true }));
 app.use(cors());
-
 // 3) ROUTES
 app.use('/v1/user/', userRouter);
 app.use('/v1/bill/', billsRouter);
