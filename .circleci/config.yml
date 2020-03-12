@@ -52,7 +52,7 @@ jobs:
             echo "Hello the current build number is ${BUCKET_NAME}"
             aws s3 cp csye6225-web-app-${CIRCLE_BUILD_NUM}.zip s3://${BUCKET_NAME} --sse
       - run:
-          name: Code Deploy
+          name: Code Deploy call
           command: |
             aws deploy create-deployment --application-name csye6225-webapp \
             --deployment-config-name CodeDeployDefault.AllAtOnce \
