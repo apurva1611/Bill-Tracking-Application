@@ -1,2 +1,2 @@
 ls -al
-forever stopall
+sudo pm2 stop /home/ubuntu/webapp_node/server.js

@@ -3,5 +3,5 @@
 # this will restart app/server on instance reboot
 # actually start the server
 ls -al
-forever stopall
-forever start /home/ubuntu/webapp_node/server.js
+sudo pm2 stop /home/ubuntu/webapp_node/server.js
+sudo pm2 start /home/ubuntu/webapp_node/server.js
