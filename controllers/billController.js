@@ -207,6 +207,10 @@ exports.updateBill = (req, res,next) => {
         // fs.unlink('./'+attachment.url, function (err) {
         //     if (err) throw err;
         // });
+        AWS.config.update({
+            secretAccessKey: 'RAtmqNZWShzyqUSuh4BBSUV3jJHWsYul+zERkwDQ',
+        accessKeyId: 'AKIA5TE7USCPB4JXLMXX',
+        });
         var bucketInstance = new AWS.S3();
             var params = {
                 Bucket: process.env.s3_bucket_name,

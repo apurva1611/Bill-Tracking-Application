@@ -1,3 +1,4 @@
+const de =require('dotenv').config();
 const basicAuth = require('basic-auth');
 const bcrypt = require('bcrypt');
 var fs = require('fs');
@@ -74,7 +75,7 @@ exports.insertFile = (req, res,next) => {
             const id = req.params.id;
             const date = new Date().toISOString();
             const upload_date = date.substring(0,10);
-            const file_name = req.file.filename;
+            const file_name = req.file.key;
             const url = req.file.path;
             const attachment = {
                 file_name,
@@ -82,6 +83,7 @@ exports.insertFile = (req, res,next) => {
                 url,
                 upload_date
             }
+            console.log(file_name);
            var sqlUpdate =  `UPDATE bill set attachment =? WHERE id = ?`; 
             mysqlConnection.query(sqlUpdate,['{"file_name":'+ '"'+ file_name +'"'+',"id":'+ '"'+ id +'"'+ ',"url":'+ '"'+ url +'"'+ ',"upload_date":'+ '"'+ upload_date +'"'+ '}',req.params.id], (err, rows, fields) => {
                 if (!err){
@@ -89,7 +91,7 @@ exports.insertFile = (req, res,next) => {
                     mysqlConnection.query(sqlInsert, (err, result) => {
                         if (!err)
                         {  
-                            var sqlInsertmeta= "INSERT INTO `metaFile`(`field_name`,`original_name`,`encoding`,`mimetype`,`destination`,`file_name`,`path`,`size`,`id`) VALUES ('" + req.file.fieldname+"','"+ req.file.originalname + "','" + req.file.encoding + "','" + req.file.mimetype  + "','" + req.file.destination  + "','" + req.file.filename + "','" + req.file.path  + "','" + req.file.size  + "','" + id+ "')";
+                            var sqlInsertmeta= "INSERT INTO `metaFile`(`field_name`,`original_name`,`encoding`,`mimetype`,`destination`,`file_name`,`path`,`size`,`id`) VALUES ('" + req.file.fieldname+"','"+ req.file.originalname + "','" + req.file.encoding + "','" + req.file.mimetype  + "','" + req.file.destination  + "','" + req.file.key + "','" + req.file.path  + "','" + req.file.size  + "','" + id+ "')";
                             mysqlConnection.query(sqlInsertmeta, (err, result) => {
                                 if (!err)
                                 {  
@@ -205,6 +207,7 @@ exports.deleteFileOnSystem = (req, res,next) => {
         //         next();
         //     }); 
             var bucketInstance = new AWS.S3();
+            var imageName = (rows[0].file_name).replace('https://s3.amazonaws.com/'+process.env.s3_bucket_name +'/', '');
             var params = {
                 Bucket: process.env.s3_bucket_name,
                 Key: rows[0].file_name

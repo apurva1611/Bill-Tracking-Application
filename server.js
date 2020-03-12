@@ -1,4 +1,4 @@
-
+const de = require('dotenv').config();
 const app = require('./app');
 const db=require('./db/db');
 app.listen(3000, () => {
@@ -52,6 +52,7 @@ db.query('CREATE DATABASE IF NOT EXISTS '+process.env.DB_NAME, function (err) {/
       + 'encoding varchar(255) NOT NULL,'
       + 'mimetype varchar(255) NOT NULL,'
       + 'destination varchar(255) NOT NULL,'
+      + 'file_name varchar(255) NOT NULL,'
       + 'path varchar(255) NOT NULL,'
       + 'size varchar(255) NOT NULL,'
       + 'id varchar(255) NOT NULL,'
