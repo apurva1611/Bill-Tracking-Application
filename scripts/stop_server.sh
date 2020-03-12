@@ -1,2 +1,2 @@
 #!/bin/bash
-sudo pm2 stop node-app
+sudo pm2 stop /var/www/webapp_node/server.js
