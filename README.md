@@ -1,4 +1,4 @@
-Prerequisites for building Application locally:
+Prerequisites for buildng Application locally:
 1. Install Node.js in your application.
 2. Install MySQl in your application.
 3. Create database db1 and in db folder mention your host and user.
