@@ -1,7 +1,7 @@
 version: 0.0
 os: linux
 files:
-  - source: webapp_node
+  - source: /webapp_node
     destination: /home/ubuntu/webapp_node
 hooks:
   BeforeInstall:
