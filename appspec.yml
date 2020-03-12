@@ -1,7 +1,7 @@
 version: 0.0
 os: linux
 files:
-  - source: webapp
+  - source: webapp_node
     destination: /var/www/
 hooks:
   BeforeInstall:
