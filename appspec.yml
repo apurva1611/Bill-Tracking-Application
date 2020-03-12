@@ -2,7 +2,7 @@ version: 0.0
 os: linux
 files:
   - source: webapp_node
-    destination: /var/www/
+    destination: /var/www/webapp_node
 hooks:
   BeforeInstall:
     - location: scripts/install_dependencies.sh
