@@ -49,6 +49,7 @@ jobs:
           name: Upload Artifact to S3
           command: |
             cd codedeploy_artifact
+            echo "Hello the current build number is ${BUCKET_NAME}"
             aws s3 cp csye6225-web-app-${CIRCLE_BUILD_NUM}.zip s3://${BUCKET_NAME} --sse
       - run:
           name: Code Deploy
