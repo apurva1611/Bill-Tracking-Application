@@ -54,6 +54,7 @@ jobs:
       - run:
           name: Code Deploy call
           command: |
+            export AWS_DEFAULT_REGION=us-east-1
             aws deploy create-deployment --application-name csye6225-webapp \
             --deployment-config-name CodeDeployDefault.AllAtOnce \
             --deployment-group-name csye6225-webapp-deployment \
