@@ -34,7 +34,9 @@ jobs:
           command: |
             echo "Hello the current build number is ${CIRCLE_BUILD_NUM}"
             pwd
+            ls -al
             mkdir -p codedeploy_artifact
+            ls -al
             zip -r csye6225-web-app-${CIRCLE_BUILD_NUM}.zip webapp
             mv csye6225-web-app-${CIRCLE_BUILD_NUM}.zip codedeploy_artifact/
             cd codedeploy_artifact
