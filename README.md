@@ -2,7 +2,7 @@ Prerequisites for building Application locally:
 1. Install Node.js in your application.
 2. Install MySQl in your application.
 3. Create database db1 and in db folder mention your host and user.
-4. Create two tables users and bill.
+4. Create two tabless users and bill.
 5. Schema of Table bill is:
 CREATE TABLE bill (
     id varchar(255) NOT NULL,
