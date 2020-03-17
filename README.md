@@ -3,7 +3,7 @@ Prerequisites for building Application locally:
 2. Install MySQl in your application.
 3. Create database db1 and in db folder mention your host and user.
 4. Create two tabless users and bill.
-5. Schema of Table bill is:
+5. Schema of Table bill is as given below:
 CREATE TABLE bill (
     id varchar(255) NOT NULL,
     created_ts varchar(255) NOT NULL,
