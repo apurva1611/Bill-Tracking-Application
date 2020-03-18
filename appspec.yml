@@ -4,6 +4,10 @@ files:
   - source: /webapp_node
     destination: /home/ubuntu/webapp_node
 hooks:
+  BeforeInstall:
+    - location: scripts/before_install.sh
+      timeout: 300
+      runas: root
   AfterInstall:
     - location: scripts/install_dependencies.sh
       timeout: 300

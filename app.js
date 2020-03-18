@@ -13,6 +13,6 @@ app.use(cors());
 // 3) ROUTES
 app.use('/v1/user/', userRouter);
 app.use('/v2/bill/', billsRouter);
-app.use('/v2/bill/',fileRouter);
+app.use('/v1/bill/',fileRouter);
 app.get('/v2/bills/',billController.checkUser,billController.getAllBills);
 module.exports = app;
