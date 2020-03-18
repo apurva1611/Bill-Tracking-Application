@@ -59,7 +59,7 @@ jobs:
             --deployment-config-name CodeDeployDefault.AllAtOnce \
             --deployment-group-name csye6225-webapp-deployment \
             --description "CSYE6255 - CodeDeploy" \
-            --file-exists-behavior - OVERWRITE \
+            --file-exists-behavior OVERWRITE \
             --s3-location bucket=${BUCKET_NAME},key=csye6225-web-app-${CIRCLE_BUILD_NUM}.zip,bundleType=zip
   build:
     docker:
