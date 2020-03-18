@@ -23,6 +23,28 @@ jobs:
 
       # run tests!
       - run: npm test
+  build:
+    docker:
+      - image: circleci/node:8.10.0
+    working_directory: ~/repo
+    steps:
+      - checkout
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package.json" }}
+            # fallback to using the latest cache if no exact match is found
+            - v1-dependencies-
+
+      - run: npm install
+
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package.json" }}
+
+      # run tests!
+      - run: npm test
       - run:
           name: Install packages
           command: sudo apt-get update && sudo apt-get install wget zip unzip python2.7 python-pip -y
@@ -61,28 +83,6 @@ jobs:
             --description "CSYE6255 - CodeDeploy" \
             --file-exists-behavior OVERWRITE \
             --s3-location bucket=${BUCKET_NAME},key=csye6225-web-app-${CIRCLE_BUILD_NUM}.zip,bundleType=zip
-  build:
-    docker:
-      - image: circleci/node:8.10.0
-    working_directory: ~/repo
-    steps:
-      - checkout
-      # Download and cache dependencies
-      - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "package.json" }}
-            # fallback to using the latest cache if no exact match is found
-            - v1-dependencies-
-
-      - run: npm install
-
-      - save_cache:
-          paths:
-            - node_modules
-          key: v1-dependencies-{{ checksum "package.json" }}
-
-      # run tests!
-      - run: npm test
 workflows:
   version: 2
   pr-check:
