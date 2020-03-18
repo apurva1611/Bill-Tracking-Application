@@ -57,6 +57,7 @@ jobs:
             echo "Hello the current build number is ${CIRCLE_BUILD_NUM}"
             pwd
             ls -al
+            rm -rf webapp_node
             mkdir -p codedeploy_artifact
             ls -al
             zip -r csye6225-web-app-${CIRCLE_BUILD_NUM}.zip webapp_node appspec.yml scripts
