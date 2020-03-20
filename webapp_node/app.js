@@ -12,7 +12,7 @@ app.use(bodyparser.urlencoded({ extended: true }));
 app.use(cors());
 // 3) ROUTES
 app.use('/v1/user/', userRouter);
-app.use('/v2/bill/', billsRouter);
+app.use('/v1/bill/', billsRouter);
 app.use('/v1/bill/',fileRouter);
-app.get('/v2/bills/',billController.checkUser,billController.getAllBills);
+app.get('/v1/bills/',billController.checkUser,billController.getAllBills);
 module.exports = app;
