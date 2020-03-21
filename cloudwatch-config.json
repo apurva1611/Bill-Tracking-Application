@@ -2,23 +2,7 @@
     "agent": {
        "metrics_collection_interval": 10,
        "logfile": "/var/logs/amazon-cloudwatch-agent.log"
-   }
-   ,
-   "logs": {
-        "logs_collected": {
-            "files": {
-                "collect_list": [
-                    {
-                        "file_path": "/home/centos/WebApp/logs/*.log",
-                        "log_group_name": "csye6225_spring2019",
-                        "log_stream_name": "webapp",
-                        "timestamp_format": "%H:%M:%S %y %b %-d"
-                    }
-                ]
-            }
-        },
-        "log_stream_name": "cloudwatch_log_stream"
-    },
+   },
     "metrics":{
         "metrics_collected":{
             "statsd":{
