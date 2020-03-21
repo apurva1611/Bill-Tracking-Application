@@ -3,6 +3,8 @@ os: linux
 files:
   - source: /webapp_node
     destination: /home/ubuntu/webapp_node
+  - source: /cloudwatch-config.json
+    destination: /home/ubuntu/cloudwatch-config.json
 hooks:
   BeforeInstall:
     - location: scripts/before_install.sh
