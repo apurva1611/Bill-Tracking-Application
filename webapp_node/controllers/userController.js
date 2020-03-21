@@ -3,6 +3,8 @@ const bcrypt = require('bcrypt');
 const helper = require('../helper/helper');
 const { fromString } = require('uuidv4');
 const mysqlConnection= require('../db/db');
+var StatsD = require('node-statsd'),
+client = new StatsD();
 
 exports.getAllusers = (req, res) => {
     mysqlConnection.query('SELECT * FROM users', (err, rows, fields) => {
@@ -49,6 +51,7 @@ exports.checkBody = (req, res, next) => {
  };
 
 exports.createUser =(req, res,next) => {
+    client.increment('post.user');
     const data = req.body;
     const fName = data.first_name;
     const lName = data.last_name;
