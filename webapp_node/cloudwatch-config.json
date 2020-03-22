@@ -2,7 +2,7 @@
     "agent": {
        "metrics_collection_interval": 10,
        "region": "us-east-1",
-       "logfile": "/opt/aws/amazon-cloudwatch-agent/logs/amazon-cloudwatch-agent.log"
+       "logfile": "/var/log/amazon/amazon-cloudwatch-agent/amazon-cloudwatch-agent.log"
    },
    "logs": {
     "logs_collected": {
