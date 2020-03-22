@@ -6,6 +6,20 @@ const billController = require('./controllers/billController');
 const billsRouter = require('./routes/billRoutes');
 const fileRouter = require('./routes/fileRoutes');
 const userRouter = require('./routes/userRoutes');
+const winston = require('winston');
+
+// Logger configuration
+const logConfiguration = {
+    'transports': [
+        new winston.transports.File({
+            filename: './logs/webapp.log'
+        })
+    ]
+};
+// Create the logger
+const logger = winston.createLogger(logConfiguration);
+// Log a message
+logger.info('Hello, Winston!');
 const app = express();
 app.use(bodyparser.json());
 app.use(bodyparser.urlencoded({ extended: true }));
