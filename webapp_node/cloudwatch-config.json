@@ -4,6 +4,21 @@
        "region": "us-east-1",
        "logfile": "/opt/aws/amazon-cloudwatch-agent/logs/amazon-cloudwatch-agent.log"
    },
+   "logs": {
+    "logs_collected": {
+      "files": {
+        "collect_list": [
+          {
+            "file_path": "/opt/aws/amazon-cloudwatch-agent/logs/amazon-cloudwatch-agent.log",
+            "log_group_name": "/ec2/CloudWatchAgentLog/",
+            "log_stream_name": "webapp",
+            "timezone": "Local"
+          }
+        ]
+      }
+    },
+    "log_stream_name": "/ec2/catchall"
+  },
     "metrics":{
         "metrics_collected":{
             "statsd":{
