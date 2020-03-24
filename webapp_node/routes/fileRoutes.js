@@ -31,6 +31,7 @@ const s3 = new AWS.S3();
 const sns = new AWS.SNS({
     region: 'us-east-1'
   })
+var startTimeBucket = new Date();
 var storage=multerS3({
     s3: s3,
     bucket: process.env.s3_bucket_name,//bucketname
@@ -44,6 +45,9 @@ var storage=multerS3({
     }
 });
 var upload = multer({storage:storage,fileFilter:fileFilter}).single('image');
+var endTimeBucket =new Date();
+var milliSecondsOfAPICall1 = (endTimeBucket.getTime() - startTimeBucket.getTime());
+client.timing('post.File.S3BucketCall',milliSecondsOfAPICall1);
 router.route('/:id/file/').
 post(fileController.checkUser,fileController.checkBillId,(req,res,next)=>{
     upload(req, res, function(err) {

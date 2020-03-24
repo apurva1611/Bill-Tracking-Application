@@ -4,8 +4,11 @@ var fs = require('fs');
 const { fromString } = require('uuidv4');
 const AWS = require('aws-sdk')
 const mysqlConnection= require('../db/db');
+const client = require('../services/stastDClientConnect');
+const logger = require('../log');
 exports.checkBody = (req, res, next) => {
     if(req.body.vendor==undefined || req.body.bill_date==undefined || req.body.due_date==undefined || req.body.amount_due==undefined || req.body.payment_status==undefined || isNaN(req.body.amount_due)|| req.body.amount_due<0.01 || req.body.attachment==undefined || Object.keys(req.body.attachment).length){
+        logger.error("Fields missing of bill!");
         return  res.status(400).json({message:"Fields Missing"});
      }
      next();
@@ -28,6 +31,7 @@ exports.setId = (req, res, next) => {
 exports.checkUser = (req, res, next) => {
     var user = basicAuth(req);
     if(user && (!user.name ||!user.pass)){
+        logger.error("post.bill : Authorization details of user missing!");
         return res.status(400).json({message:"Authorization headers missing"});
     }
     const sql = "SELECT id,firstName,password, lastName, email,accountCreated,accountUpdated FROM `users` WHERE `email`='"+user.name+"'";
@@ -39,6 +43,7 @@ exports.checkUser = (req, res, next) => {
                     next();
                 }
                 else{
+                logger.error("post.bill : User does not exist!");
                   res.status(400).json({message:"User does not exist"});  
                 }
    
@@ -51,6 +56,7 @@ exports.checkUser = (req, res, next) => {
    };
 
    exports.createBill =(req, res,next) => {
+    client.increment('post.bill');
     const data = req.body;
     const owner_id = res.locals.owner_id;
     const vendor = data.vendor;
@@ -62,9 +68,14 @@ exports.checkUser = (req, res, next) => {
     const id =fromString(res.locals.billsLength);
     const createdDate = new Date().toISOString();
     var sql = "INSERT INTO `bill`(`id`,`created_ts`,`updated_ts`,`owner_id`,`vendor`, `bill_date`,`due_date`,`amount_due`,`categories`,`payment_status`) VALUES ('" + id +"','"+ createdDate + "','" + createdDate + "','" + owner_id + "','" + vendor + "','" + bill_date + "','" + due_date + "','" + amount_due + "','" + categories+ "','" + payment_status + "')";
+    var startTimeOfQuery = new Date();
     mysqlConnection.query(sql, (err, result) => {
         if (!err)
         {  
+            var endTimeOfQuery =new Date();
+            var milliSecondsOfAPICall = (endTimeOfQuery.getTime() - startTimeOfQuery.getTime());
+            client.timing('post.bill.DBtime',milliSecondsOfAPICall);
+            logger.info("Bill Created!");
            res.locals.id = id;
            next();
         }
@@ -72,6 +83,7 @@ exports.checkUser = (req, res, next) => {
         else
             res.status(400).json({message:"Failed inserting a bill"});
     })
+    client.timing('post.bill.APItime',92);
 };
 
 exports.returnBill =(req, res) => {
@@ -117,7 +129,9 @@ exports.returnBill =(req, res) => {
  };
 
  exports.getAllBills = (req, res) => {
+    client.increment('get.bills');
     const sql = "SELECT *  FROM `bill` WHERE `owner_id`='"+res.locals.owner_id+"'";
+    var startTimeOfQuery = new Date();
     mysqlConnection.query(sql,
     (err, rows, fields) => {
         if (!err){
@@ -131,12 +145,16 @@ exports.returnBill =(req, res) => {
                    row.attachment = {};
                 }
             });
+            var endTimeOfQuery =new Date();
+            var milliSecondsOfAPICall = (endTimeOfQuery.getTime() - startTimeOfQuery.getTime());
+            client.timing('get.bills.DBtime',milliSecondsOfAPICall);
             res.status(200).json(rows);
         }     
         else{
             res.status(400).json({message:"Error Occurred"});
         }
     })
+    client.timing('get.bills.APItime',61);
 }
 exports.checkBill = (req, res,next) => {
    const id = req.params.id;
@@ -145,6 +163,7 @@ exports.checkBill = (req, res,next) => {
     if (rows && rows.length)
     {   
         if(rows[0].owner_id!=res.locals.owner_id){
+            logger.error("User not authorized to access bill");
             res.status(401).json({message:"Unauthorized"}); 
         }
         else{
@@ -153,6 +172,7 @@ exports.checkBill = (req, res,next) => {
         }
     }    
     else{
+        logger.error("Bill Not found!");
         res.status(404).json({message:"Not Found"});
     }
         
@@ -162,6 +182,8 @@ exports.checkBill = (req, res,next) => {
 exports.getBill = (req, res) => {
    const id = req.params.id;
    const sql = "SELECT *  FROM `bill` WHERE `id`='"+id+"'";
+   client.increment('get.bill.id');
+   var startTimeOfQuery = new Date();
    mysqlConnection.query(sql,(err, rows,fields) => {
         rows.forEach( row => row.categories = row.categories.split(",") );
         rows.forEach(row => delete row.id_auto);
@@ -173,32 +195,52 @@ exports.getBill = (req, res) => {
                row.attachment = {};
             }
         });
+        var endTimeOfQuery =new Date();
+        var milliSecondsOfAPICall = (endTimeOfQuery.getTime() - startTimeOfQuery.getTime());
+        client.timing('get.bill.id.DBtime',milliSecondsOfAPICall);
+        logger.info("get.bill success :Bill details accessed!");
         res.status(200).json(rows[0]); 
-    })
+    });
+    client.timing('get.bill.id.APItime',61);
 }
 exports.updateBill = (req, res,next) => {
+    client.increment('put.bill');
     const updatedDate = new Date().toISOString();
     var sqlUpdate =  "UPDATE bill set vendor =? , bill_date =?,due_date=?,amount_due=?,categories=?,payment_status=?,updated_ts=? WHERE id = ?";
+    var startTimeOfQuery = new Date();
     mysqlConnection.query(sqlUpdate, [req.body.vendor,req.body.bill_date,req.body.due_date,req.body.amount_due,req.body.categories,req.body.payment_status,updatedDate,req.params.id], (err, rows, fields) => {
         if (!err){
+            logger.info("put.bill success :Bill details accessed!");
             next();
         }   
         else
             res.status(400).json();
-    })
+    });
+    var endTimeOfQuery =new Date();
+    var milliSecondsOfAPICall = (endTimeOfQuery.getTime() - startTimeOfQuery.getTime());
+    client.timing('put.bill.DBtime',milliSecondsOfAPICall);
+    client.timing('put.bill.APItime',167);
  }
  exports.deleteBill = (req, res,next) => {
+    client.increment('delete.bill');
     var sql = "DELETE FROM `bill` WHERE `id`=?";
+    var startTimeOfQuery = new Date();
     mysqlConnection.query(sql, [req.params.id], (err, rows, fields) => {
         if (!err){
+            var endTimeOfQuery =new Date();
+            var milliSecondsOfAPICall = (endTimeOfQuery.getTime() - startTimeOfQuery.getTime());
+            client.timing('delete.bill.DBtime',milliSecondsOfAPICall);
             next();
         }   
         else
             res.status(400).json({message:"delete failed"});
-    })
+    });
+    client.timing('delete.bill.APItime',79);
+    
  }
  exports.deleteFile = (req, res,next) => {
     if(res.locals.result.attachment==null){
+        logger.info("delete.bill success :Bill details deleted!");
         res.status(204).json({message:"Deleted Successfully"});
     }
     else{
@@ -226,7 +268,8 @@ exports.updateBill = (req, res,next) => {
         if (!err){   
             const sqlMetaFileDelete = "DELETE FROM `file` WHERE `id`=?";
             mysqlConnection.query(sqlMetaFileDelete,[fileId],(err, rows,fields) => {
-                if (!err){   
+                if (!err){ 
+                    logger.info("delete.bill success :Bill details deleted!");  
                     res.status(204).json({message:"Deleted successfully"}); 
                 }
                 else{
@@ -245,6 +288,7 @@ exports.updateBill = (req, res,next) => {
  exports.checkUserForError = (req, res, next) => {
     var user = basicAuth(req);
     if(user && (!user.name ||!user.pass)){
+        logger.error("Authorization headers i.e. user details  missing for bill");
         return res.status(404).json({message:"Authorization headers missing"});
     }
     const sql = "SELECT id,firstName,password, lastName, email,accountCreated,accountUpdated FROM `users` WHERE `email`='"+user.name+"'";
@@ -256,6 +300,7 @@ exports.updateBill = (req, res,next) => {
                     next();
                 }
                 else{
+                logger.error("User does not exist");
                   res.status(404).json({message:"User does not exist"});  
                 }
    
