@@ -10,5 +10,4 @@ router
   .get(billController.checkUserForError,billController.checkBill,billController.getBill)
   .put(billController.checkUserForError,billController.checkBody,billController.checkBill,billController.updateBill,billController.getBill)
   .delete(billController.checkUserForError,billController.checkBill,billController.deleteBill,billController.deleteFile)
-
 module.exports = router;
