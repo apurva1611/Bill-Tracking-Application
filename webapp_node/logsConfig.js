@@ -7,6 +7,7 @@ if (!fs.existsSync(logDir)) {
 }
 const logger = winston.createLogger({
   transports: [
+    new winston.transports.Console(),
     new winston.transports.File({
       filename: `${logDir}${file}`,
       handleExceptions: true

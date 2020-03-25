@@ -6,7 +6,7 @@ const AWS = require('aws-sdk');// Lets us interact with the aws services
 const multerS3 = require('multer-s3');// Lets us interact with the S3 Bucket for multipart forms upload
 const mysqlConnection= require('../db/db');
 const client = require('../services/stastDClientConnect');
-const logger = require('../log');
+const logger = require('../logsConfig');
 exports.checkUser = (req, res, next) => {
     var user = basicAuth(req);
     if(user && (!user.name ||!user.pass)){
@@ -214,6 +214,7 @@ exports.getFile = (req, res,next) => {
         var endTimeFile =new Date();
         var milliSecondsOfAPICall = (endTimeFile.getTime() - startTimeFile.getTime());
         client.timing('get.file.DBtime',milliSecondsOfAPICall);
+        client.timing('get.file.APItime',127);
         logger.info("Get.file API call Success"); 
         res.status(200).json(rows[0]); 
      }
