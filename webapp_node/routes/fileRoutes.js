@@ -4,7 +4,6 @@ const router = express.Router();
 const AWS = require('aws-sdk');// Lets us interact with the aws services
 const multerS3 = require('multer-s3');// Lets us interact with the S3 Bucket for multipart forms upload
 const fileController = require('../controllers/fileController');
-const client = require('../services/stastDClientConnect');
 // var storage = multer.diskStorage({
 //     destination: (req, file, cb) => {
 //         cb(null, './images/')
@@ -14,6 +13,7 @@ const client = require('../services/stastDClientConnect');
 //         cb(null, name[0] + req.params.id +'.' + name[1]);
 //     }
 // });
+const client = require('../services/stastDClientConnect');
 const fileFilter = (req, file, cb) => {
         const extension = file.mimetype && file.mimetype.split("/")[1]? file.mimetype.split("/")[1].toLowerCase():"";
         if(extension =="jpeg" || extension =="pdf" || extension == "jpg" || extension =="png"){
