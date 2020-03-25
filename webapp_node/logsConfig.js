@@ -9,7 +9,7 @@ const logger = winston.createLogger({
   transports: [
     new winston.transports.Console(),
     new winston.transports.File({
-      filename: './logs/webapp.log',
+      filename: '/home/ubuntu/webapp_node/logs/webapp.log',
       handleExceptions: true
     })
   ]
