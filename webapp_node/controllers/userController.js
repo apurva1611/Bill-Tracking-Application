@@ -4,7 +4,7 @@ const helper = require('../helper/helper');
 const { fromString } = require('uuidv4');
 const mysqlConnection= require('../db/db');
 const client = require('../services/stastDClientConnect');
-const logger = require('../logsConfig');
+var  logger = require('../logsConfig');
 exports.getAllusers = (req, res) => {
     mysqlConnection.query('SELECT * FROM users', (err, rows, fields) => {
         if (!err)
@@ -123,7 +123,7 @@ exports.getUser =(req, res) => {
             res.status(400).json();
          }    
      });
-    client.timing('get.user.APItime',81);
+    client.timing('get.user.APItime',100);
  };
 
 exports.updateUser=(req,res) => {

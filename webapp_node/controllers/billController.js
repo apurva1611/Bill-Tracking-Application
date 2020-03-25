@@ -5,7 +5,7 @@ const { fromString } = require('uuidv4');
 const AWS = require('aws-sdk')
 const mysqlConnection= require('../db/db');
 const client = require('../services/stastDClientConnect');
-const logger = require('../logsConfig');
+var logger = require('../logsConfig');
 exports.checkBody = (req, res, next) => {
     if(req.body.vendor==undefined || req.body.bill_date==undefined || req.body.due_date==undefined || req.body.amount_due==undefined || req.body.payment_status==undefined || isNaN(req.body.amount_due)|| req.body.amount_due<0.01 || req.body.attachment==undefined || Object.keys(req.body.attachment).length){
         logger.error("Fields missing of bill!");
@@ -83,7 +83,7 @@ exports.checkUser = (req, res, next) => {
         else
             res.status(400).json({message:"Failed inserting a bill"});
     })
-    client.timing('post.bill.APItime',92);
+    client.timing('post.bill.APItime',156);
 };
 
 exports.returnBill =(req, res) => {
@@ -154,7 +154,7 @@ exports.returnBill =(req, res) => {
             res.status(400).json({message:"Error Occurred"});
         }
     })
-    client.timing('get.bills.APItime',61);
+    client.timing('get.bills.APItime',106);
 }
 exports.checkBill = (req, res,next) => {
    const id = req.params.id;
@@ -201,7 +201,7 @@ exports.getBill = (req, res) => {
         logger.info("get.bill success :Bill details accessed!");
         res.status(200).json(rows[0]); 
     });
-    client.timing('get.bill.id.APItime',61);
+    client.timing('get.bill.id.APItime',109);
 }
 exports.updateBill = (req, res,next) => {
     client.increment('put.bill');
@@ -235,7 +235,7 @@ exports.updateBill = (req, res,next) => {
         else
             res.status(400).json({message:"delete failed"});
     });
-    client.timing('delete.bill.APItime',79);
+    client.timing('delete.bill.APItime',146);
     
  }
  exports.deleteFile = (req, res,next) => {
