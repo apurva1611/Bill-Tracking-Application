@@ -5,7 +5,7 @@ const { fromString } = require('uuidv4');
 const AWS = require('aws-sdk')
 const mysqlConnection= require('../db/db');
 const client = require('../services/stastDClientConnect');
-const logger = require('../log');
+const logger = require('../logsConfig');
 exports.checkBody = (req, res, next) => {
     if(req.body.vendor==undefined || req.body.bill_date==undefined || req.body.due_date==undefined || req.body.amount_due==undefined || req.body.payment_status==undefined || isNaN(req.body.amount_due)|| req.body.amount_due<0.01 || req.body.attachment==undefined || Object.keys(req.body.attachment).length){
         logger.error("Fields missing of bill!");
