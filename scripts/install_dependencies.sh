@@ -6,3 +6,4 @@ cd /home/ubuntu/webapp_node
 npm install
 rm -rf node_modules/bcrypt
 npm install
+sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -c file:/home/ubuntu/webapp_node/cloudwatch-config.json -s
