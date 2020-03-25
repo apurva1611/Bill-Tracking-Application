@@ -52,7 +52,7 @@ CREATE TABLE metaFile (
 
 9. Schema of table bill is changed and a cloumn attachment of type json was added:
 ALTER table bill
-ADD column attachement json;
+ADD column attachement json
 
 10. Install dependencies mentioned in package.json. These should be installed by going in webapp folder.Those include:
 {   "basic-auth": "^2.0.1",
