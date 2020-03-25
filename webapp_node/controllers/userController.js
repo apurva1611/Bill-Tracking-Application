@@ -88,6 +88,7 @@ exports.getUser =(req, res) => {
     client.increment('get.user');
     var user = basicAuth(req);
     if(user.name ==undefined || user.pass==undefined){
+        logger.error('get.user : User Authentication Fields Missing');
         return res.status(400);
     }
     const sql = "SELECT id,password,firstName, lastName, email,accountCreated,accountUpdated FROM `users` WHERE `email`='"+user.name+"'";
@@ -123,7 +124,7 @@ exports.getUser =(req, res) => {
             res.status(400).json();
          }    
      });
-    client.timing('get.user.APItime',100);
+    client.timing('get.user.APItime',81);
  };
 
 exports.updateUser=(req,res) => {
@@ -138,7 +139,7 @@ exports.updateUser=(req,res) => {
             var endTimeOfQuery =new Date();
             var milliSecondsOfAPICall = (endTimeOfQuery.getTime() - startTimeOfQuery.getTime());
             client.timing('put.user.DBtime',milliSecondsOfAPICall);
-            logger.info('put.user : user uodated');
+            logger.info('put.user : user updated');
             res.status(204).json({message:"Updated Successfully"});
         }
         else{
@@ -151,9 +152,11 @@ exports.updateUser=(req,res) => {
 exports.checkUser = (req, res, next) => {
     var user = basicAuth(req);
     if(user.name ==undefined || user.pass==undefined){
+        logger.error('put.user : Authorization headers missing');
         return res.status(400).json({message:"Authorization headers missing"});
     }
     if(req.body.email_address!=user.name){
+        logger.error('put.user : Authorization email and request email dont match');
        return res.status(400).json({message:"Authorization email and request email dont match"});
     }
     const sql = "SELECT id,firstName,password, lastName, email,accountCreated,accountUpdated FROM `users` WHERE `email`='"+user.name+"'";
@@ -164,12 +167,13 @@ exports.checkUser = (req, res, next) => {
                     next();
                 }
                 else{
-                    logger.error('User does not exist!');
+                    logger.error('put.user : User does not exist!');
                   res.status(400).json({message:"User does not exist"});  
                 }
    
             }
             else{
+                logger.error('put.user : mysql connection failed!');
                 res.status(400).json();
             }
                 

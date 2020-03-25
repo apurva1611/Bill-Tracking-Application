@@ -10,6 +10,7 @@ var logger= require('../logsConfig');
 exports.checkUser = (req, res, next) => {
     var user = basicAuth(req);
     if(user && (!user.name ||!user.pass)){
+        logger.error("File API :Authorization headers missing");
         return res.status(400).json({message:"Authorization headers missing"});
     }
     const sql = "SELECT id,password FROM `users` WHERE `email`='"+user.name+"'";
@@ -20,11 +21,13 @@ exports.checkUser = (req, res, next) => {
                     next();
                 }
                 else{
+                    logger.error("File API :User does not exist");
                   res.status(400).json({message:"User does not exist"});  
                 }
    
             }
             else{
+                logger.error("File API :mysql connection failed");
                 res.status(400).json({message:" Request failed"});
             }
                 
@@ -37,10 +40,12 @@ exports.checkBillId = (req, res,next) => {
     mysqlConnection.query(sql,(err, rows,fields) => {
      if (rows && rows.length){   
          if(rows[0].owner_id!=res.locals.owner_id){
+            logger.error("File API :Unauthorized");
              res.status(404).json({message:"Unauthorized"}); 
          }
          else{
              if(rows[0].attachment!=null){
+                logger.error("File API :bill already has a file attached");
                 res.status(400).json({message:"bill already has a file attached"});  
              }
              else{

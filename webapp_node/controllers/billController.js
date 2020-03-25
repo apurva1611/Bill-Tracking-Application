@@ -31,7 +31,7 @@ exports.setId = (req, res, next) => {
 exports.checkUser = (req, res, next) => {
     var user = basicAuth(req);
     if(user && (!user.name ||!user.pass)){
-        logger.error("post.bill : Authorization details of user missing!");
+        logger.error("Bill API: Authorization details of user missing!");
         return res.status(400).json({message:"Authorization headers missing"});
     }
     const sql = "SELECT id,firstName,password, lastName, email,accountCreated,accountUpdated FROM `users` WHERE `email`='"+user.name+"'";
@@ -43,12 +43,13 @@ exports.checkUser = (req, res, next) => {
                     next();
                 }
                 else{
-                logger.error("post.bill : User does not exist!");
+                logger.error("Bill API: User does not exist!");
                   res.status(400).json({message:"User does not exist"});  
                 }
    
             }
             else{
+                logger.error("post.bill : mysql connection failed!");
                 res.status(400).json({message:"failed"});
             }
                 
@@ -148,13 +149,14 @@ exports.returnBill =(req, res) => {
             var endTimeOfQuery =new Date();
             var milliSecondsOfAPICall = (endTimeOfQuery.getTime() - startTimeOfQuery.getTime());
             client.timing('get.bills.DBtime',milliSecondsOfAPICall);
+            logger.info("get.bills: get all bills of user")
             res.status(200).json(rows);
         }     
         else{
             res.status(400).json({message:"Error Occurred"});
         }
     })
-    client.timing('get.bills.APItime',106);
+    client.timing('get.bills.APItime',80);
 }
 exports.checkBill = (req, res,next) => {
    const id = req.params.id;
@@ -163,7 +165,7 @@ exports.checkBill = (req, res,next) => {
     if (rows && rows.length)
     {   
         if(rows[0].owner_id!=res.locals.owner_id){
-            logger.error("User not authorized to access bill");
+            logger.error("Bill API: User not authorized to access bill");
             res.status(401).json({message:"Unauthorized"}); 
         }
         else{
@@ -172,7 +174,7 @@ exports.checkBill = (req, res,next) => {
         }
     }    
     else{
-        logger.error("Bill Not found!");
+        logger.error("Bill API: Bill Not found!");
         res.status(404).json({message:"Not Found"});
     }
         
@@ -201,7 +203,7 @@ exports.getBill = (req, res) => {
         logger.info("get.bill success :Bill details accessed!");
         res.status(200).json(rows[0]); 
     });
-    client.timing('get.bill.id.APItime',109);
+    client.timing('get.bill.id.APItime',95);
 }
 exports.updateBill = (req, res,next) => {
     client.increment('put.bill');
@@ -235,7 +237,7 @@ exports.updateBill = (req, res,next) => {
         else
             res.status(400).json({message:"delete failed"});
     });
-    client.timing('delete.bill.APItime',146);
+    client.timing('delete.bill.APItime',124);
     
  }
  exports.deleteFile = (req, res,next) => {
@@ -258,7 +260,11 @@ exports.updateBill = (req, res,next) => {
                 Bucket: process.env.s3_bucket_name,
                 Key: attachment.file_name
             };
+            var startTime = new Date();
             bucketInstance.deleteObject(params, function (err, data) {
+                var endTimeOfQuery =new Date();
+                var milliSecondsOfAPICall = (endTimeOfQuery.getTime() - startTime.getTime());
+                client.timing('delete.bill.S3BucketCall',milliSecondsOfAPICall);
                 if (err){
                     res.status(404).json({message:" attachment not deleted on s3 bucket"})
                 }
@@ -288,7 +294,7 @@ exports.updateBill = (req, res,next) => {
  exports.checkUserForError = (req, res, next) => {
     var user = basicAuth(req);
     if(user && (!user.name ||!user.pass)){
-        logger.error("Authorization headers i.e. user details  missing for bill");
+        logger.error("Bill API :Authorization headers i.e. user details  missing for bill");
         return res.status(404).json({message:"Authorization headers missing"});
     }
     const sql = "SELECT id,firstName,password, lastName, email,accountCreated,accountUpdated FROM `users` WHERE `email`='"+user.name+"'";
@@ -300,12 +306,13 @@ exports.updateBill = (req, res,next) => {
                     next();
                 }
                 else{
-                logger.error("User does not exist");
+                logger.error("Bill API: User does not exist");
                   res.status(404).json({message:"User does not exist"});  
                 }
    
             }
             else{
+                logger.error("Bill API: mysql connection failed!");
                 res.status(404).json({message:"failed"});
             }
                 

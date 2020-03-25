@@ -64,6 +64,7 @@ post(fileController.checkUser,fileController.checkBillId,(req,res,next)=>{
     })
 
 },fileController.checkExtension,fileController.insertFile);
+
  router
 .route('/:id/file/:fileId')
    .get(fileController.checkUserForError,fileController.checkBillIDs,fileController.getFile)
