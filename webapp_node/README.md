@@ -82,4 +82,4 @@ Steps to run unit test:
 3. Run npm run test command to run test cases..
 4. Demo purpose.
 
-ci/cd to deploy application
+ci/cd to deploy application:
