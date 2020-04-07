@@ -322,7 +322,7 @@ exports.updateBill = (req, res,next) => {
    };
    exports.getDueBills = (req, res) => {
     const day = req.params.id;
-    const sql = "SELECT * FROM `bills` where `owner_id`='" +res.locals.owner_id+"' and `due_date` > curdate() and due_date <= curdate()+'" +day+"'";
+    const sql = "SELECT *  FROM `bill` WHERE `owner_id`='"+res.locals.owner_id+"'";
     var user = basicAuth(req);
     mysqlConnection.query(sql,
     (err, rows, fields) => {
