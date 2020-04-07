@@ -381,6 +381,7 @@ exports.updateBill = (req, res,next) => {
             res.status(200).json(rows);
         }     
         else{
+            logger.error(err);
             res.status(400).json({message:"Error Occurred"});
         }
     })
