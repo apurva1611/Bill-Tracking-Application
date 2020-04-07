@@ -341,43 +341,35 @@ exports.updateBill = (req, res,next) => {
             rows.forEach( row => {
                 console.log('Link for bill: /v1/bill/' + row.id)
             });
-            const app = Consumer.create({
-                queueUrl: 'https://sqs.us-east-1.amazonaws.com/934490181790/SQSQueue',
-                handleMessage: async (message) => {
-                    var params = {
-                        Message: {
-                            email:user.name,
-                            records:rows
-                        },
-                        TopicArn: 'arn:aws:sns:us-east-1:934490181790:SNSBILL'
-                      };
-                      
-                      // Create promise and SNS service object
-                      var publishTextPromise = new AWS.SNS({apiVersion: '2010-03-31'}).publish(params).promise();
-                      // Handle promise's fulfilled/rejected states
-                      publishTextPromise.then(
-                        function(data) {
-                          console.log(`Message ${params.Message} send sent to the topic ${params.TopicArn}`);
-                          console.log("MessageID is " + data.MessageId);
-                        }).catch(
-                          function(err) {
-                          console.error(err, err.stack);
-                        });
+            var params = {
+                Message: {
+                    email:user.name,
+                    records:rows
                 },
-                sqs: new AWS.SQS()
-              });
-              app.on('error', (err) => {
-                console.error(err.message);
-              });
+                TopicArn: 'arn:aws:sns:us-east-1:934490181790:SNSBILL'
+              };
+              
+              // Create promise and SNS service object
+            new AWS.SNS().publish(params,context.done);
+            // const app = Consumer.create({
+            //     queueUrl: 'https://sqs.us-east-1.amazonaws.com/934490181790/SQSQueue',
+            //     handleMessage: async (message) => {
+                   
+            //     },
+            //     sqs: new AWS.SQS()
+            //   });
+            //   app.on('error', (err) => {
+            //     console.error(err.message);
+            //   });
                
-              app.on('processing_error', (err) => {
-                console.error(err.message);
-              });
+            //   app.on('processing_error', (err) => {
+            //     console.error(err.message);
+            //   });
                
-              app.on('timeout_error', (err) => {
-               console.error(err.message);
-              }); 
-            app.start();
+            //   app.on('timeout_error', (err) => {
+            //    console.error(err.message);
+            //   }); 
+            // app.start();
             res.status(200).json(rows);
         }     
         else{
