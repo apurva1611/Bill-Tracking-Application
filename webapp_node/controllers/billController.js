@@ -342,10 +342,8 @@ exports.updateBill = (req, res,next) => {
                 console.log('Link for bill: /v1/bill/' + row.id)
             });
             var params = {
-                Message: {
-                    email:user.name,
-                    records:rows
-                },
+                Message: user.email,
+                Subject:"message send",
                 TopicArn: 'arn:aws:sns:us-east-1:934490181790:SNSBILL'
               };
               var publishTextPromise = new AWS.SNS({apiVersion: '2010-03-31'}).publish(params).promise();
