@@ -344,7 +344,7 @@ exports.updateBill = (req, res,next) => {
             var nextDate = currentDate + day;
             curr_month++;
             var curr_year =todayDate.getFullYear();
-            var bills = "Bills due are:";
+            var bills = "Bills due are ";
             var records = [];
             rows.forEach(row => {
                           var str = row.due_date;
@@ -358,7 +358,7 @@ exports.updateBill = (req, res,next) => {
                                bills+=s;
                            }
                        });
-            const result = user.name + "-" + bills;
+            const result = user.name + ":" + bills;
             logger.info(result);
             var params = {
                 Message: result,
