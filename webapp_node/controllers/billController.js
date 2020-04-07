@@ -346,7 +346,7 @@ exports.updateBill = (req, res,next) => {
                 Subject:"message send",
                 TopicArn: 'arn:aws:sns:us-east-1:934490181790:SNSBILL'
               };
-              new AWS.SNS().publish(params, function(err, data) {
+              new AWS.SNS({region: 'us-east-1'}).publish(params, function(err, data) {
                 if (err) {
                     logger.error(err);
                     console.log("Error sending a message " + err);
