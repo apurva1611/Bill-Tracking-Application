@@ -81,7 +81,6 @@ Steps to run unit test:
 2. Just check in package.json in script object there is a property "test:mocha".
 3. Run npm run test command to run test cases..
 4. Demo purpose.
-
 ci/cd to deploy application
 
 
@@ -94,3 +93,4 @@ aws cloudformation --profile prod create-stack \
 curl -u 0f28a58b4344a5b31c13bfbc12795537dba621bc \
     -d build_parameters[CIRCLE_JOB]=build \
     https://circleci.com/api/v1.1/project/github/mathurap-spring2020/webapp/tree/master
+ci/cd to deploy application:
