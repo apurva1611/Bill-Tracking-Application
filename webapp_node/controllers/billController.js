@@ -342,20 +342,17 @@ exports.updateBill = (req, res,next) => {
                 console.log('Link for bill: /v1/bill/' + row.id)
             });
             var params = {
-                Message: user.email,
+                Message: user.name,
                 Subject:"message send",
                 TopicArn: 'arn:aws:sns:us-east-1:934490181790:SNSBILL'
               };
-              var publishTextPromise = new AWS.SNS({apiVersion: '2010-03-31'}).publish(params).promise();
-              // Handle promise's fulfilled/rejected states
-              publishTextPromise.then(
-                function(data) {
-                  console.log(`Message ${params.Message} send sent to the topic ${params.TopicArn}`);
-                  console.log("MessageID is " + data.MessageId);
-                }).catch(
-                  function(err) {
-                  console.error(err, err.stack);
-                });
+              new AWS.SNS().publish(params, function(err, data) {
+                if (err) {
+                    console.log("Error sending a message " + err);
+                } else {
+                    console.log("Sent message: " + data.MessageId);
+            
+                }})
             // const app = Consumer.create({
             //     queueUrl: 'https://sqs.us-east-1.amazonaws.com/934490181790/SQSQueue',
             //     handleMessage: async (message) => {
