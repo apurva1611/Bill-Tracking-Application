@@ -322,7 +322,7 @@ exports.updateBill = (req, res,next) => {
    };
    exports.getDueBills = (req, res) => {
     const day = req.params.id;
-    const sql = "SELECT * FROM `bills` where `owner_id`='" +res.locals.owner_id+"' and `due_date` > curdate() and due_date <= curdate()+'" +day+"'";
+    const sql = "SELECT *  FROM `bill` WHERE `owner_id`='"+res.locals.owner_id+"'";
     var user = basicAuth(req);
     mysqlConnection.query(sql,
     (err, rows, fields) => {
@@ -381,6 +381,7 @@ exports.updateBill = (req, res,next) => {
             res.status(200).json(rows);
         }     
         else{
+            logger.error(err);
             res.status(400).json({message:"Error Occurred"});
         }
     })
