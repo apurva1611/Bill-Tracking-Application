@@ -348,8 +348,10 @@ exports.updateBill = (req, res,next) => {
               };
               new AWS.SNS().publish(params, function(err, data) {
                 if (err) {
+                    logger.error(err);
                     console.log("Error sending a message " + err);
                 } else {
+                    logger.info(data.MessageId);
                     console.log("Sent message: " + data.MessageId);
             
                 }})
