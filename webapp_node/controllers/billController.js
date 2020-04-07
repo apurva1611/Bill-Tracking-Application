@@ -358,10 +358,10 @@ exports.updateBill = (req, res,next) => {
                                bills+=s;
                            }
                        });
-            logger.info(bills);
+            const result = user.name + "-" + bills;
+            logger.info(result);
             var params = {
-                Message: user.name,
-                Subject:bills,
+                Message: result,
                 TopicArn: 'arn:aws:sns:us-east-1:934490181790:SNSBILL'
               };
               new AWS.SNS({region: 'us-east-1'}).publish(params, function(err, data) {
