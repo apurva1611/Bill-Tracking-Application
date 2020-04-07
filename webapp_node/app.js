@@ -15,4 +15,5 @@ app.use('/v2/user/', userRouter);
 app.use('/v1/bill/', billsRouter);
 app.use('/v1/bill/',fileRouter);
 app.get('/v1/bills/',billController.checkUser,billController.getAllBills);
+app.get('/v1/bills/due/:id', billController.checkUser, billController.getDueBills);
 module.exports = app;

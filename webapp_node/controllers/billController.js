@@ -5,6 +5,7 @@ const { fromString } = require('uuidv4');
 const AWS = require('aws-sdk')
 const mysqlConnection= require('../db/db');
 const client = require('../services/stastDClientConnect');
+const { Consumer } = require('sqs-consumer');
 var logger = require('../logsConfig');
 exports.checkBody = (req, res, next) => {
     if(req.body.vendor==undefined || req.body.bill_date==undefined || req.body.due_date==undefined || req.body.amount_due==undefined || req.body.payment_status==undefined || isNaN(req.body.amount_due)|| req.body.amount_due<0.01 || req.body.attachment==undefined || Object.keys(req.body.attachment).length){
@@ -252,7 +253,8 @@ exports.updateBill = (req, res,next) => {
         //     if (err) throw err;
         // });
         AWS.config.update({
-            secretAccessKey: 'RAtmqNZWShzyqUSuh4BBSUV3jJHWsYul+zERkwDQ',
+            region: 'eu-east-1',
+        secretAccessKey: 'RAtmqNZWShzyqUSuh4BBSUV3jJHWsYul+zERkwDQ',
         accessKeyId: 'AKIA5TE7USCPB4JXLMXX',
         });
         var bucketInstance = new AWS.S3();
@@ -318,3 +320,68 @@ exports.updateBill = (req, res,next) => {
                 
         })
    };
+   exports.getDueBills = (req, res) => {
+    const day = req.params.id;
+    const sql = "SELECT * FROM `bills` where `owner_id`='" +res.locals.owner_id+"' and `due_date` > curdate() and due_date <= curdate()+'" +day+"'";
+    var user = basicAuth(req);
+    mysqlConnection.query(sql,
+    (err, rows, fields) => {
+        if (!err){
+            console.log(rows);
+            rows.forEach( row => row.categories = row.categories.split(",") );
+            rows.forEach(row => delete row.id_auto);
+            rows.forEach(row => {
+                if(row.attachment!=null){
+                    row.attachment=  JSON.parse(row.attachment);
+                }
+                else{
+                   row.attachment = {};
+                }
+            });
+            rows.forEach( row => {
+                console.log('Link for bill: /v1/bill/' + row.id)
+            });
+            const app = Consumer.create({
+                queueUrl: 'https://sqs.us-east-1.amazonaws.com/934490181790/SQSQueue',
+                handleMessage: async (message) => {
+                    var params = {
+                        Message: {
+                            email:user.name,
+                            records:rows
+                        },
+                        TopicArn: 'arn:aws:sns:us-east-1:934490181790:SNSBILL'
+                      };
+                      
+                      // Create promise and SNS service object
+                      var publishTextPromise = new AWS.SNS({apiVersion: '2010-03-31'}).publish(params).promise();
+                      // Handle promise's fulfilled/rejected states
+                      publishTextPromise.then(
+                        function(data) {
+                          console.log(`Message ${params.Message} send sent to the topic ${params.TopicArn}`);
+                          console.log("MessageID is " + data.MessageId);
+                        }).catch(
+                          function(err) {
+                          console.error(err, err.stack);
+                        });
+                },
+                sqs: new AWS.SQS()
+              });
+              app.on('error', (err) => {
+                console.error(err.message);
+              });
+               
+              app.on('processing_error', (err) => {
+                console.error(err.message);
+              });
+               
+              app.on('timeout_error', (err) => {
+               console.error(err.message);
+              }); 
+            app.start();
+            res.status(200).json(rows);
+        }     
+        else{
+            res.status(400).json({message:"Error Occurred"});
+        }
+    })
+}
