@@ -344,7 +344,7 @@ exports.updateBill = (req, res,next) => {
             var nextDate = currentDate + day;
             curr_month++;
             var curr_year =todayDate.getFullYear();
-            var string = "Bills due are:";
+            var bills = "Bills due are:";
             var records = [];
             rows.forEach(row => {
                           var str = row.due_date;
@@ -355,12 +355,13 @@ exports.updateBill = (req, res,next) => {
                                s+= row.id;
                                s+=", ";
                                records.push(row);
-                               string+=s;
+                               bills+=s;
                            }
                        });
+            logger.info(bills);
             var params = {
                 Message: user.name,
-                Subject:string,
+                Subject:bills,
                 TopicArn: 'arn:aws:sns:us-east-1:934490181790:SNSBILL'
               };
               new AWS.SNS({region: 'us-east-1'}).publish(params, function(err, data) {
