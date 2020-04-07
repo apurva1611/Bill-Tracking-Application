@@ -253,7 +253,7 @@ exports.updateBill = (req, res,next) => {
         //     if (err) throw err;
         // });
         AWS.config.update({
-            region: 'eu-east-1',
+        region: 'us-east-1',
         secretAccessKey: 'RAtmqNZWShzyqUSuh4BBSUV3jJHWsYul+zERkwDQ',
         accessKeyId: 'AKIA5TE7USCPB4JXLMXX',
         });
