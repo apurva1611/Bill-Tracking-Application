@@ -81,4 +81,6 @@ Steps to run unit test:
 2. Just check in package.json in script object there is a property "test:mocha".
 3. Run npm run test command to run test cases..
 4. Demo purpose.
- aws cloudformation --profile prod create-stack   --stack-name stack   --parameters file://vars.json  --template-body file://autoScaling.json --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM
+ aws cloudformation --profile prod create-stack   --stack-name stack   --parameters file://vars.json  --template-body file://autoScaling.json --capabilities CAPABILITY_IAM CAPABIL
+
+AutoConfiguration configured.
