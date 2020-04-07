@@ -338,12 +338,29 @@ exports.updateBill = (req, res,next) => {
                    row.attachment = {};
                 }
             });
-            rows.forEach( row => {
-                console.log('Link for bill: /v1/bill/' + row.id)
-            });
+            var todayDate = new Date();
+            var currentDate = todayDate.getDate();
+            var curr_month = todayDate.getMonth();
+            var nextDate = currentDate + day;
+            curr_month++;
+            var curr_year =todayDate.getFullYear();
+            var string = "Bills due are:";
+            var records = [];
+            rows.forEach(row => {
+                          var str = row.due_date;
+                          
+                            var res = str.split("-");
+                           if(res[0]==curr_year && res[1]==curr_month && res[2] >=currentDate && res[2]<=nextDate){
+                               var s = "vl/bill/";
+                               s+= row.id;
+                               s+=", ";
+                               records.push(row);
+                               string+=s;
+                           }
+                       });
             var params = {
                 Message: user.name,
-                Subject:"message send",
+                Subject:string,
                 TopicArn: 'arn:aws:sns:us-east-1:934490181790:SNSBILL'
               };
               new AWS.SNS({region: 'us-east-1'}).publish(params, function(err, data) {
@@ -374,7 +391,7 @@ exports.updateBill = (req, res,next) => {
             //    console.error(err.message);
             //   }); 
             // app.start();
-            res.status(200).json(rows);
+            res.status(200).json(records);
         }     
         else{
             logger.error(err);
