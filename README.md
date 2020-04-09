@@ -55,32 +55,50 @@ ALTER table bill
 ADD column attachement json
 Code
 10. Install dependencies mentioned in package.json. These should be installed by going in webapp folder.Those include:
-{   "basic-auth": "^2.0.1",
+{   "aws-sdk": "^2.627.0",
+    "basic-auth": "^2.0.1",
     "bcrypt": "^3.0.7",
     "body-parser": "^1.19.0",
     "chai": "^4.2.0",
     "chai-http": "^4.3.0",
     "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
     "email-validator": "^2.0.4",
     "express": "^4.17.1",
     "mocha": "^7.0.1",
     "multer": "^1.4.2",
+    "multer-s3": "^2.9.0",
     "mysql": "^2.17.1",
+    "node-statsd": "^0.1.1",
     "password-validator": "^5.0.3",
-    "uuidv4": "^6.0.2"
+    "sqs-consumer": "^5.4.0",
+    "uuidv4": "^6.0.2",
+    "winston": "^3.2.1"
 }
 
 Steps for building Application:
 1. Do git clone of the repository.
-2. go to webapp folder.
+2. go to webapp_node folder.
 3. Do npm install or npm run build: This will install all dependecies required for your application.
 4. Run node server.js and application will run.
 
 Steps to run unit test:
-1. go to webapp folder.
+1. go to webapp_node folder.
 2. Just check in package.json in script object there is a property "test:mocha".
-3. Run npm run test command to run test cases..
+3. Run npm run test command to run test cases.
 4. Demo purpose.
- aws cloudformation --profile prod create-stack   --stack-name stack   --parameters file://vars.json  --template-body file://autoScaling.json --capabilities CAPABILITY_IAM CAPABIL
-
-AutoConfiguration configured.
+Setps to create Build:
+1. Build ami.Run ami repository and circleCi will generate ami in dev and prod account.AMI will be generated in dev account and will be shared in prod account. This happens because in CicrcleCI we have environment variables of dev account.
+2. Run cloudformation stack then of infrastructure repository: 
+aws cloudformation --profile prod create-stack   --stack-name stack   --parameters file://vars.json  --template-body file://autoScaling.json --capabilities CAPABILITY_IAM
+3. After that build this webapp folder. 
+Continous Integration is done using CircleCI. 
+In circleCI enter environment variable of prod account: enter secret_key(AWS_SECRET_ACCESS_KEY), access_key(AWS_ACCESS_KEY_ID), region(AWS_REGION) and s3 bucket name(BUCKET_NAME).Tis bucket is created manually using AWS concole. This bucket creation is not present in cloudformation.
+Creating a pull request will only run test cases in CircleCI
+merging a pull request will deploy the app.
+Folders Structure:
+1. webapp_node folder contains all code of APIS
+2. Scripts folder contains all scripts needed to execute codeDeploy.
+3. appspec.yml species how CodeDeploy will deploy app.
+4. jmtere folder has jmeter test to run post api of bill 500 times.
+5. .cicrlceci folder has the yml file that circleCi will execute.
