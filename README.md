@@ -121,3 +121,8 @@ merging a pull request will deploy the app.
 3. appspec.yml species how CodeDeploy will deploy app.
 4. jmeter folder has jmeter test to run post api of bill 500 times.
 5. .cicrlceci folder has the yml file that circleCi will execute.
+
+## Feature Scope
+1. Content Delivery Network: CDN georaphically distributed web servers for high availability of content.It can be your images,videos, assets of application and javascript files etc. AWS cloudfront service allows implementing CDN. It has different edge locations which are geographically distributed web servers and all users close to that edge location gets content from that edge location. It increases performance and helps in delievering the content faster. 
+2. Implementing Email correct functionality of Gmail users.
+3. DB cache: 
