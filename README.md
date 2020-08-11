@@ -9,6 +9,13 @@ Designed a bill Tracking Application where users can keep track of their all kin
 5. AWS
 6. CircleCI
 
+## Devops Practices Used:
+1. Continous Integration
+2. Continous Deployment
+3. Microservices
+4. Infrastructure as Code
+5. Monitoring and Logging
+
 ## Prerequisites for building Application locally:
 1. Install Node.js in your application.
 2. Install MySQl in your application.
